@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>90 Days Ready Plan Builder</title>
+<meta name="description" content="Answer a few questions and get a 90-day preparedness plan built for your household.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Public+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one narrow column, a four-step form that turns into a printable checklist. */
+:root {
+  --paper: #f3f6f4;
+  --card: #ffffff;
+  --ink: #16201b;
+  --muted: #55635b;
+  --line: #cfd8d2;
+  --accent: #17603f;
+  --accent-ink: #ffffff;
+  --gold: #b8860b;
+  --alert: #a8261c;
+  --display: "Archivo", "Arial Narrow", Arial, sans-serif;
+  --body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #101613; --card: #18211c; --ink: #e9efeb; --muted: #a3b0a8;
+    --line: #2f3b34; --accent: #58c491; --accent-ink: #0c1410; --gold: #e0b84a; --alert: #ff8a7d;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #101613; --card: #18211c; --ink: #e9efeb; --muted: #a3b0a8;
+  --line: #2f3b34; --accent: #58c491; --accent-ink: #0c1410; --gold: #e0b84a; --alert: #ff8a7d;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.5; }
+.wrap { max-width: 640px; margin: 0 auto; padding: 24px 16px 64px; display: flex; flex-direction: column; gap: 20px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: 1.35rem; font-weight: 800; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; }
+.lede { color: var(--muted); }
+.flag { height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--alert) 0 33.3%, var(--ink) 33.3% 66.6%, var(--accent) 66.6%); }
+.notice { border-left: 4px solid var(--gold); background: var(--card); padding: 12px 14px; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px 16px; display: flex; flex-direction: column; gap: 18px; }
+.progress { display: flex; gap: 6px; }
+.progress span { flex: 1; height: 6px; border-radius: 3px; background: var(--line); }
+.progress span.on { background: var(--accent); }
+.stepname { font-size: 0.85rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+legend, .label { font-weight: 600; padding: 0; margin-bottom: 2px; }
+.hint { color: var(--muted); font-size: 0.9rem; }
+input[type="text"], input[type="email"] {
+  width: 100%; font: inherit; color: var(--ink); background: var(--paper);
+  border: 1px solid var(--line); border-radius: 8px; padding: 12px;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips label { position: relative; }
+.chips input { position: absolute; opacity: 0; inset: 0; margin: 0; }
+.chips span {
+  display: block; padding: 10px 14px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--paper); cursor: pointer; font-size: 0.95rem;
+}
+.chips input:checked + span { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+.chips input:focus-visible + span, button:focus-visible, input:focus-visible, .task input:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.counts { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.count { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.count:last-child { border-bottom: 0; }
+.stepper { display: flex; align-items: center; gap: 4px; }
+.stepper button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); color: var(--ink); font-size: 1.4rem; line-height: 1; cursor: pointer; }
+.stepper output { width: 36px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; font-size: 1.15rem; }
+.nav { display: flex; gap: 10px; justify-content: space-between; }
+.btn { font: inherit; font-weight: 600; padding: 13px 20px; border-radius: 10px; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink); cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn[disabled] { opacity: 0.6; cursor: default; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.error { color: var(--alert); font-weight: 600; }
+[hidden] { display: none !important; }
+
+/* Plan */
+.tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.tile { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+.tile b { display: block; font-family: var(--display); font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+.tile span { color: var(--muted); font-size: 0.85rem; }
+.status { padding: 12px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); font-size: 0.95rem; }
+.status.good { border-color: var(--accent); }
+.status.bad { border-color: var(--alert); }
+.phase { background: var(--card); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 12px; padding: 18px 16px; display: flex; flex-direction: column; gap: 10px; }
+.phase.outage { border-top-color: var(--alert); }
+.dates { color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.tasks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.task { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--line); cursor: pointer; }
+.task input { flex: none; width: 22px; height: 22px; margin: 2px 0 0; accent-color: var(--accent); }
+.task input:checked + span { color: var(--muted); text-decoration: line-through; }
+.walletrow { border-bottom: 1px solid var(--line); padding: 8px 0 22px; font-size: 0.95rem; color: var(--muted); }
+.small { font-size: 0.85rem; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+@media (min-width: 520px) { .tiles { grid-template-columns: repeat(4, 1fr); } }
+@media (prefers-reduced-motion: no-preference) { .chips span, .btn { transition: background-color .12s; } }
+@media print {
+  body { background: #fff; color: #000; font-size: 12pt; }
+  .noprint, #form-view { display: none !important; }
+  .phase, .tile, .card { break-inside: avoid; border-color: #999; }
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="flag" aria-hidden="true"></div>
+  <header class="noprint" id="intro">
+    <h1>90 Days Ready</h1>
+    <p class="lede">Answer a few short questions. Get a 90-day plan built for your household and your home.</p>
+  </header>
+  <p class="notice noprint">No agency has announced a 90-day blackout. That figure is a Pentagon target for military bases. This plan is for outages that do happen: storms, cold snaps, and grid strain.</p>
+
+  <!-- ============ FORM ============ -->
+  <form id="form-view" class="card" novalidate>
+    <div class="progress" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span></div>
+    <p class="stepname" id="stepname" aria-live="polite">Step 1 of 4: Your household</p>
+
+    <section data-step="0">
+      <div>
+        <label class="label" for="firstName">First name <span class="hint">(optional)</span></label>
+        <input type="text" id="firstName" name="firstName" maxlength="40" autocomplete="given-name">
+      </div>
+      <fieldset>
+        <legend>Who are you planning for?</legend>
+        <div class="counts" id="counts"></div>
+      </fieldset>
+    </section>
+
+    <section data-step="1" hidden>
+      <fieldset><legend>Where do you live?</legend>
+        <div class="chips" data-radio="housing" data-options="apartment:Apartment or condo|house:House|dorm:Dorm|room:Rented or shared room|mobile:Mobile home"></div>
+      </fieldset>
+      <fieldset id="fs-tenure"><legend>Do you own or rent?</legend>
+        <div class="chips" data-radio="tenure" data-options="rent:Rent|own:Own"></div>
+      </fieldset>
+      <fieldset id="fs-floor"><legend>Which floor?</legend>
+        <div class="chips" data-radio="floor" data-options="ground:Ground or 1st|mid:2nd to 5th|high:6th or higher"></div>
+      </fieldset>
+      <fieldset><legend>Winters where you live</legend>
+        <div class="chips" data-radio="winter" data-options="cold:Cold, it freezes|mild:Mild or hot"></div>
+      </fieldset>
+      <fieldset><legend>How is your home heated?</legend>
+        <div class="chips" data-radio="heat" data-options="unknown:Not sure|electric:Electric|gas:Gas|other:Something else"></div>
+      </fieldset>
+      <fieldset><legend>Where does your water come from?</legend>
+        <div class="chips" data-radio="water" data-options="city:City water|well:A well|unknown:Not sure"></div>
+      </fieldset>
+    </section>
+
+    <section data-step="2" hidden>
+      <fieldset><legend>Does anyone in the home have any of these?</legend>
+        <p class="hint">Check all that apply, or none. This only shapes the checklist.</p>
+        <div class="chips" data-check="health" data-options="dailymeds:Daily prescriptions|coldmeds:Medicine kept cold, like insulin|powered:Powered medical equipment|dialysis:Dialysis|mobility:Trouble with stairs or walking|pregnant:Pregnant or a newborn"></div>
+      </fieldset>
+      <fieldset><legend>Do you have a car?</legend>
+        <div class="chips" data-radio="vehicle" data-options="yes:Yes|no:No"></div>
+      </fieldset>
+      <fieldset><legend>What can you put toward prep each month?</legend>
+        <div class="chips" data-radio="budget" data-options="tight:Under $50|moderate:$50 to $150|flexible:More than $150"></div>
+      </fieldset>
+      <fieldset><legend>How long could you eat from what is in the home now?</legend>
+        <div class="chips" data-radio="foodDays" data-options="d0:Under 3 days|d3:3 to 7 days|d8:1 to 2 weeks|d14:Over 2 weeks"></div>
+      </fieldset>
+      <fieldset><legend>Who is close by?</legend>
+        <div class="chips" data-radio="network" data-options="family:Family nearby|neighbors:Neighbors I know|alone:Mostly on my own"></div>
+      </fieldset>
+    </section>
+
+    <section data-step="3" hidden>
+      <div>
+        <label class="label" for="email">Email your plan to <span class="hint">(optional)</span></label>
+        <input type="email" id="email" name="email" maxlength="254" autocomplete="email" inputmode="email" placeholder="you@example.com">
+        <p class="hint">Leave it blank to view the plan here only. Your answers are used to build the plan and are not stored.</p>
+      </div>
+      <div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input type="text" id="website" name="website" tabindex="-1" autocomplete="off"></div>
+      <p class="error" id="form-error" role="alert" hidden></p>
+    </section>
+
+    <div class="nav">
+      <button type="button" class="btn ghost" id="back" hidden>Back</button>
+      <span></span>
+      <button type="button" class="btn" id="next">Next</button>
+      <button type="submit" class="btn" id="build" hidden>Build my plan</button>
+    </div>
+  </form>
+
+  <!-- ============ PLAN ============ -->
+  <section id="plan-view" hidden style="display:flex;flex-direction:column;gap:20px"></section>
+</main>
+
+<script src="plan.js"></script>
+<script>
+(function () {
+  'use strict';
+  var PB = window.PlanBuilder;
+  var $ = function (id) { return document.getElementById(id); };
+  var el = function (tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+
+  /* ---- State with sensible defaults, so the form is usable as soon as it loads ---- */
+  var state = {
+    adults: 2, elders: 0, teens: 0, children: 0, infants: 0, pets: 0,
+    housing: 'apartment', tenure: 'rent', floor: 'ground', winter: 'cold', heat: 'unknown', water: 'city',
+    health: [], vehicle: 'yes', budget: 'moderate', foodDays: 'd3', network: 'family'
+  };
+  var COUNTS = [
+    ['adults', 'Adults (18 and up)', 1, 12],
+    ['elders', 'Of those adults, 65 or older', 0, 12],
+    ['teens', 'Teens (13 to 17)', 0, 10],
+    ['children', 'Children (1 to 12)', 0, 10],
+    ['infants', 'Babies under 1', 0, 6],
+    ['pets', 'Pets', 0, 10]
+  ];
+  var STEP_NAMES = ['Your household', 'Your home', 'Needs and resources', 'Get your plan'];
+  var step = 0;
+  /* Set to true once RESEND_API_KEY and FROM_EMAIL are set in Netlify. */
+  var EMAIL_ENABLED = false;
+  var LAST = EMAIL_ENABLED ? 3 : 2;
+  if (!EMAIL_ENABLED) { var bars = document.querySelectorAll('.progress span'); bars[bars.length - 1].remove(); }
+
+  /* ---- Build the count steppers ---- */
+  COUNTS.forEach(function (c) {
+    var row = el('div', 'count');
+    var lab = el('span', null, c[1]); lab.id = 'lab-' + c[0];
+    var st = el('div', 'stepper');
+    var minus = el('button', null, '−'); minus.type = 'button'; minus.setAttribute('aria-label', 'Fewer: ' + c[1]);
+    var out = el('output', null, String(state[c[0]])); out.id = 'out-' + c[0]; out.setAttribute('aria-labelledby', lab.id);
+    var plus = el('button', null, '+'); plus.type = 'button'; plus.setAttribute('aria-label', 'More: ' + c[1]);
+    var bump = function (d) {
+      var max = c[0] === 'elders' ? state.adults : c[3];
+      state[c[0]] = Math.max(c[2], Math.min(max, state[c[0]] + d));
+      if (state.elders > state.adults) { state.elders = state.adults; $('out-elders').textContent = String(state.elders); }
+      out.textContent = String(state[c[0]]);
+    };
+    minus.addEventListener('click', function () { bump(-1); });
+    plus.addEventListener('click', function () { bump(1); });
+    st.appendChild(minus); st.appendChild(out); st.appendChild(plus);
+    row.appendChild(lab); row.appendChild(st);
+    $('counts').appendChild(row);
+  });
+
+  /* ---- Build chip groups from data-options ---- */
+  Array.prototype.forEach.call(document.querySelectorAll('.chips'), function (box) {
+    var name = box.getAttribute('data-radio') || box.getAttribute('data-check');
+    var multi = box.hasAttribute('data-check');
+    box.getAttribute('data-options').split('|').forEach(function (pair) {
+      var i = pair.indexOf(':'), value = pair.slice(0, i), text = pair.slice(i + 1);
+      var label = el('label');
+      var input = el('input'); input.type = multi ? 'checkbox' : 'radio'; input.name = name; input.value = value; input.id = name + '-' + value;
+      if (!multi && state[name] === value) input.checked = true;
+      input.addEventListener('change', function () {
+        if (multi) {
+          state[name] = Array.prototype.map.call(box.querySelectorAll('input:checked'), function (n) { return n.value; });
+        } else { state[name] = value; syncHome(); }
+      });
+      label.appendChild(input); label.appendChild(el('span', null, text));
+      box.appendChild(label);
+    });
+  });
+
+  function syncHome() {
+    $('fs-tenure').hidden = state.housing === 'dorm';
+    $('fs-floor').hidden = state.housing === 'house' || state.housing === 'mobile';
+  }
+
+  function showStep(n) {
+    step = n;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-step]'), function (s) {
+      s.hidden = Number(s.getAttribute('data-step')) !== n;
+      s.style.display = s.hidden ? '' : 'flex'; s.style.flexDirection = 'column'; s.style.gap = '18px';
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.progress span'), function (p, i) { p.className = i <= n ? 'on' : ''; });
+    $('stepname').textContent = 'Step ' + (n + 1) + ' of ' + (LAST + 1) + ': ' + STEP_NAMES[n];
+    $('back').hidden = n === 0;
+    $('next').hidden = n === LAST;
+    $('build').hidden = n !== LAST;
+    $('form-error').hidden = true;
+  }
+  $('next').addEventListener('click', function () { showStep(Math.min(LAST, step + 1)); window.scrollTo(0, 0); });
+  $('back').addEventListener('click', function () { showStep(Math.max(0, step - 1)); window.scrollTo(0, 0); });
+
+  function localISO() {
+    var d = new Date();
+    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+  }
+
+  /* ---- Submit: build the plan here, then ask the server to email it ---- */
+  $('form-view').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    if (step !== LAST) { showStep(step + 1); return; }
+    var raw = Object.assign({}, state, {
+      firstName: $('firstName').value, email: EMAIL_ENABLED ? $('email').value : '', startDate: localISO(), website: $('website').value
+    });
+    var v = PB.validate(raw);
+    if (!v.ok) { $('form-error').textContent = v.errors.join(' '); $('form-error').hidden = false; return; }
+    var plan = PB.buildPlan(v.answers);
+    renderPlan(plan, v.answers);
+    if (v.answers.email) sendEmail(raw, v.answers.email);
+  });
+
+  function sendEmail(raw, address) {
+    var status = $('email-status');
+    status.className = 'status noprint'; status.hidden = false;
+    status.textContent = 'Sending your plan to ' + address + '...';
+    fetch('/.netlify/functions/send-plan', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(raw)
+    }).then(function (res) {
+      if (res.ok) { status.className = 'status good noprint'; status.textContent = 'Sent to ' + address + '. Check spam if it is not in your inbox in a few minutes.'; return; }
+      return res.json().catch(function () { return {}; }).then(function (b) {
+        status.className = 'status bad noprint';
+        status.textContent = b && b.error === 'email_not_configured'
+          ? 'Email is not set up on this copy of the site, so nothing was sent. Use Print or Copy below to keep your plan.'
+          : 'The email did not go through. Your plan is below. Use Print or Copy to keep it, or try again later.';
+      });
+    }).catch(function () {
+      status.className = 'status bad noprint';
+      status.textContent = 'Email is not available here, so nothing was sent. Use Print or Copy below to keep your plan.';
+    });
+  }
+
+  function renderPlan(plan, answers) {
+    var view = $('plan-view');
+    view.textContent = '';
+    view.appendChild(el('h1', null, plan.title));
+    var notes = el('div'); notes.style.cssText = 'display:flex;flex-direction:column;gap:8px';
+    plan.notes.forEach(function (n) { notes.appendChild(el('p', 'lede', n)); });
+    view.appendChild(notes);
+
+    var status = el('p', 'status noprint'); status.id = 'email-status'; status.setAttribute('role', 'status'); status.hidden = true;
+    view.appendChild(status);
+
+    var tiles = el('div', 'tiles');
+    plan.numbers.forEach(function (n) { var t = el('div', 'tile'); t.appendChild(el('b', null, n.value)); t.appendChild(el('span', null, n.label)); tiles.appendChild(t); });
+    view.appendChild(tiles);
+
+    var actions = el('div', 'actions noprint');
+    var print = el('button', 'btn', 'Print or save as PDF'); print.type = 'button';
+    print.addEventListener('click', function () { try { window.print(); } catch (e) {} });
+    var copy = el('button', 'btn ghost', 'Copy as text'); copy.type = 'button';
+    copy.addEventListener('click', function () {
+      var done = function (ok) { copy.textContent = ok ? 'Copied' : 'Copy failed'; setTimeout(function () { copy.textContent = 'Copy as text'; }, 2000); };
+      try { navigator.clipboard.writeText(PB.renderText(plan)).then(function () { done(true); }, function () { done(false); }); } catch (e) { done(false); }
+    });
+    var edit = el('button', 'btn ghost', 'Change my answers'); edit.type = 'button';
+    edit.addEventListener('click', function () { view.hidden = true; view.style.display = 'none'; $('form-view').hidden = false; $('intro').hidden = false; showStep(0); window.scrollTo(0, 0); });
+    actions.appendChild(print); actions.appendChild(copy); actions.appendChild(edit);
+    view.appendChild(actions);
+
+    plan.sections.forEach(function (s) {
+      var sec = el('section', 'phase' + (s.id === 'outage' ? ' outage' : ''));
+      sec.appendChild(el('h2', null, s.heading));
+      if (s.dates) sec.appendChild(el('p', 'dates', s.dates));
+      var goal = el('p'); goal.appendChild(el('strong', null, 'Goal: ')); goal.appendChild(document.createTextNode(s.goal)); sec.appendChild(goal);
+      var ul = el('ul', 'tasks');
+      s.items.forEach(function (it, i) {
+        var li = el('li'); var lab = el('label', 'task');
+        var cb = el('input'); cb.type = 'checkbox'; cb.id = s.id + '-' + i;
+        lab.appendChild(cb); lab.appendChild(el('span', null, it)); li.appendChild(lab); ul.appendChild(li);
+      });
+      sec.appendChild(ul);
+      view.appendChild(sec);
+    });
+
+    var wallet = el('section', 'phase');
+    wallet.appendChild(el('h2', null, 'Wallet card'));
+    wallet.appendChild(el('p', 'dates', 'Copy by hand, one per person.'));
+    plan.wallet.forEach(function (w) { wallet.appendChild(el('div', 'walletrow', w)); });
+    var stopped = el('p'); stopped.appendChild(el('strong', null, 'If stopped: ')); stopped.appendChild(document.createTextNode('"Am I free to go? I do not consent to a search. I want a lawyer."'));
+    wallet.appendChild(stopped);
+    view.appendChild(wallet);
+
+    var small = el('div', 'small');
+    plan.disclaimers.forEach(function (d) { small.appendChild(el('p', null, d)); });
+    view.appendChild(small);
+
+    $('form-view').hidden = true; $('intro').hidden = true;
+    view.hidden = false; view.style.display = 'flex';
+    window.scrollTo(0, 0);
+  }
+
+  $('plan-view').style.display = 'none';
+  syncHome();
+  showStep(0);
+})();
+</script>
+</body>
+</html>
