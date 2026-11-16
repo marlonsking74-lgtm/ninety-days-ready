@@ -373,7 +373,7 @@ input[type="text"], input[type="email"] {
     wallet.appendChild(el('h2', null, 'Wallet card'));
     wallet.appendChild(el('p', 'dates', 'Copy by hand, one per person.'));
     plan.wallet.forEach(function (w) { wallet.appendChild(el('div', 'walletrow', w)); });
-    var stopped = el('p'); stopped.appendChild(el('strong', null, 'If stopped: ')); stopped.appendChild(document.createTextNode('"Am I free to go? I do not consent to a search. I want a lawyer."'));
+    var stopped = el('p'); stopped.appendChild(el('strong', null, 'If stopped: ')); stopped.appendChild(document.createTextNode('"Am I free to go? I do not consent to a search. I am going to remain silent. I want a lawyer."'));
     wallet.appendChild(stopped);
     view.appendChild(wallet);
 

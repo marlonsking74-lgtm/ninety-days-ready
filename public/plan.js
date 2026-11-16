@@ -126,6 +126,8 @@
     if (a.budget === 'tight') notes.push('Money is tight, so free steps come first: the family plan, tap water in clean bottles, your papers, and your people. Add one or two shelf items per grocery trip. Never borrow to prep.');
     if (a.budget === 'flexible') notes.push('You have room to spend. Spread it out anyway, and put the first dollars into water, medicine, and light before gadgets.');
 
+    notes.push('General information, not legal or medical advice. Check with your own doctor and your state\'s rules.');
+
     /* ---------- Days 1-7 ---------- */
     var w1 = [];
     w1.push('Fill clean, food-grade bottles and jugs with tap water until you have ' + people * 3 + ' gallons (1 gallon per person per day, 3 days). Skip old milk jugs, which are hard to get clean. Date each one and refill every 6 months.');
@@ -158,21 +160,24 @@
     m1.push('Get a manual can opener.');
     if (a.housing === 'dorm') m1.push('Dorms ban stoves and open flame. Stock no-cook food only: canned fish, peanut butter, crackers, oats, dried fruit, shelf-stable milk.');
     else m1.push('Plan no-cook meals for the first days and one safe way to heat food. Camp stoves and grills are for outdoors only, and fuel is stored away from heat and living space.');
-    if (a.infants) m1.push('For ' + plural(a.infants, 'baby', 'babies') + ': stock ready-to-feed formula if you use formula (it needs no water), plus diapers and wipes. A rough count is 8 diapers a day per baby.');
+    if (a.infants) m1.push('For ' + plural(a.infants, 'baby', 'babies') + ': stock ready-to-feed formula if you use formula (it needs no water), plus diapers and wipes. A rough count is 8 diapers a day per baby. Powdered formula needs safe water: bottled, or boiled and cooled.');
+    if (a.infants) m1.push('Babies sleep on their backs in their own flat space, dressed in layers or a wearable blanket. No quilts, pillows, or sleeping bags on a baby, even in a cold room.');
     if (a.children) m1.push('Add comfort items for the children: favorite snacks, books, cards, a small toy each.');
     if (a.pets) m1.push('For ' + plural(a.pets, 'pet', 'pets') + ': two weeks of food, extra water, a carrier or leash, and vaccination records.');
 
-    if (has('dailymeds')) m1.push('Ask your doctor and pharmacist about a 90-day supply and early-refill rules. Aim for a 30-day cushion of every daily medicine.');
-    if (has('coldmeds')) m1.push('Ask your pharmacist exactly how to keep refrigerated medicine (such as insulin) safe without power, and buy a cooling case made for it.');
+    if (has('dailymeds')) m1.push('Ask your doctor and pharmacist about a 90-day supply and early-refill rules. Aim for a 30-day cushion of every daily medicine. Use the oldest first so nothing expires. Never skip or cut doses to stretch a supply without asking your doctor or pharmacist.');
+    if (has('coldmeds')) m1.push('Ask your pharmacist exactly how to keep refrigerated medicine (such as insulin) safe without power, and buy a cooling case made for it. If it is insulin: never let it freeze, never use insulin that has frozen, and keep glucose tablets or juice, spare test strips, and meter batteries with it.');
     if (has('powered')) {
-      m1.push('Call the electric company and ask to be put on its medical needs list.');
+      m1.push('Call the electric company and ask to be put on its medical needs list. That does not guarantee your power comes back first, so plan backup power anyway.');
+      m1.push('If anyone uses oxygen: no candles, smoking, or open flame near it, and ask the supplier about backup tanks.');
       m1.push('Ask your equipment supplier about battery backup and how long it lasts. Learn the nearest place with backup power, such as a hospital or fire station.');
     }
     if (has('dialysis')) m1.push('Ask your dialysis clinic for its emergency plan, a backup clinic, and the emergency diet sheet. Keep them on paper.');
+    if (has('dialysis')) m1.push('Build your food stock from the clinic\'s list. Common storage foods like beans, potatoes, and salt substitutes can be dangerous on dialysis.');
     if (has('mobility')) m1.push('Name the person who helps with stairs and exits, and keep supplies within easy reach, not on high shelves.');
     if (has('pregnant')) m1.push('Ask your provider what to do if you cannot reach the hospital, and stock newborn basics early.');
     if (a.health.length) m1.push('Write a paper list for each person: conditions, medicines, doses, doctors, pharmacy.');
-    m1.push('Buy a real first aid kit' + (a.adults > 0 ? ', a thermometer, and a home blood pressure cuff' : '') + '.');
+    m1.push('Buy a real first aid kit' + (a.adults > 0 ? ', a thermometer, and a home blood pressure cuff. Share the readings with your doctor and do not change doses on your own' : '') + '.');
     if (a.elders) m1.push('For elders: spare glasses, hearing aid batteries, and a written daily check-in time.');
 
     if (a.winter === 'cold') {
@@ -180,10 +185,10 @@
       else if (a.heat === 'gas') m1.push('A gas furnace still needs electricity for its blower and thermostat. Plan as if the heat is out: one sleeping bag or heavy quilt per person, thermal layers, hats, wool socks.');
       else m1.push('Plan one warm room: one sleeping bag or heavy quilt per person, thermal layers, hats, wool socks.');
       m1.push('Never heat with an oven, a grill, or a generator indoors. Carbon monoxide has no smell. A generator runs outside only, at least 20 feet from the home. Never run a car in a garage to warm up or charge phones.');
-      m1.push('If the carbon monoxide alarm sounds, get everyone outside and call 911.');
+      m1.push('If the carbon monoxide alarm sounds, get everyone outside and call 911. Treat headache, dizziness, or nausea during an outage the same way.');
       if (a.housing === 'mobile') m1.push('Mobile homes lose heat fast and pipes freeze early. Know how to shut off and drain your water, and know the nearest warming center.');
     } else {
-      m1.push('Plan for heat as well as cold: battery fans, shade for windows, and extra drinking water.');
+      m1.push('Plan for heat as well as cold: battery fans, shade for windows, and extra drinking water. In extreme heat a fan is not enough, so know your nearest cooling center.');
     }
     m1.push('Start a cash reserve in small bills. First target: one week of groceries and ' + (a.vehicle === 'yes' ? 'gas' : 'rides') + '. Card readers and ATMs need power.');
     if (a.vehicle === 'yes') m1.push('Keep the gas tank above half. Put a blanket, water, and a phone charger in the car.');
@@ -195,7 +200,7 @@
     if (a.housing === 'dorm') {
       m2.push('You cannot change dorm doors, so use what you control: lock up every time, know two exits from your floor, and keep valuables and papers in a small lockbox.');
     } else if (a.tenure === 'rent') {
-      m2.push('Harden the door the renter way: swap the short hinge and strike-plate screws for 3-inch screws, add a door security bar, and put dowels in window and sliding-door tracks. All reversible.');
+      m2.push('Harden the door the renter way: swap the short hinge and strike-plate screws for 3-inch screws, add a door security bar, and put dowels in window and sliding-door tracks. All reversible. Check your lease first.');
       m2.push(EXITS);
       m2.push('Save your landlord\'s emergency number and keep a paper copy of the lease.');
     } else {
@@ -211,7 +216,7 @@
     }
     m2.push('Cover windows at night during an outage, and keep your prep quiet. Share plans with people you trust, not social media.');
     m2.push('Learn your state\'s self-defense law from a state bar or legal aid source. De-escalation comes first.');
-    m2.push('Learn the script for police contact: stay calm, hands visible, "Am I free to go?", "I do not consent to a search," "I am going to remain silent," "I want a lawyer." Never run, resist, or reach suddenly. In a car, hand over license, registration, and insurance when asked.');
+    m2.push('Learn the script for police contact: stay calm, hands visible, "Am I free to go?", "I do not consent to a search," "I am going to remain silent," "I want a lawyer." Never run, resist, or reach suddenly. In a car, the driver hands over license, registration, and insurance when asked. Some states require you to give your name when police ask for it.');
     m2.push('Write legal aid numbers on paper: NAACP Legal Defense Fund, your state ACLU, local legal aid.');
     if (a.teens) m2.push('Walk the teens through the rights script and the curfew rule: comply, document, challenge later.');
 
@@ -222,12 +227,12 @@
       m2.push('Scan the go-folder to an encrypted USB drive and leave a copy with trusted family in another city.');
     }
     if (a.tenure === 'own') {
-      m2.push('Confirm your name is on the deed. If the home was passed down without a will, see legal aid about clearing the title. Families without clear title were shut out of rebuilding aid after Katrina.');
+      m2.push('Confirm your name is on the deed. If the home was passed down without a will, see legal aid about clearing the title. Many families without clear title were denied rebuilding aid after Katrina.');
       m2.push('Read your homeowners policy for what it covers in an outage or freeze, and photograph every room.');
     } else if (a.tenure === 'rent') {
       m2.push('Get renters insurance if you have none, and photograph every room.');
     }
-    if (a.adults > 0 && a.housing !== 'dorm') m2.push('Every adult writes a will' + (kids ? ' and names who takes the children' : '') + '.');
+    if (a.adults > 0 && a.housing !== 'dorm') m2.push('Every adult writes a will' + (kids ? ' and names who takes the children' : '') + '. Sign and witness it the way your state requires, or it may not count. Legal aid can help.');
     m2.push('Grow the cash reserve toward one month of bare essentials, split between two hiding places. A fire-resistant pouch or box protects it.');
     m2.push('Open a second account at a credit union or Black-owned bank, and print one statement for every account and debt.');
     if (!small) {
@@ -273,9 +278,9 @@
     out.push('Text your out-of-state contact: who is where, and that you are okay.');
     if (has('coldmeds')) out.push('Move refrigerated medicine to its cooling case the way your pharmacist showed you.');
     if (has('powered')) out.push('Switch medical equipment to backup power and start the clock. Leave for a powered location before the battery is half gone.');
-    if (has('dialysis')) out.push('Call your dialysis clinic or its backup, and start the emergency diet.');
+    if (has('dialysis')) out.push('Call your dialysis clinic or its backup, and follow the emergency diet they gave you.');
     if (a.winter === 'cold') out.push('Move everyone into the warm room at night and check the carbon monoxide alarm.');
-    if (a.winter === 'cold' && (a.elders || a.infants)) out.push('Watch elders and babies closely for cold. Shivering, confusion, slurred speech, or unusual sleepiness means warm them and get medical help.');
+    if (a.winter === 'cold' && (a.elders || a.infants)) out.push('Watch elders and babies closely for cold. In adults: shivering, confusion, fumbling hands, slurred speech, or drowsiness. In babies: bright red, cold skin or very low energy. Warm them and call 911. A body temperature under 95 F is an emergency.');
     if (a.elders || a.network !== 'alone') out.push('Check on elders and anyone on medical equipment twice a day.');
     out.push('Leave if there is no safe water, no heat in freezing weather, a medical need you cannot meet, or danger you cannot avoid. Go early, in daylight, to a place that expects you.');
     out.push('Official evacuation or shelter orders override this plan.');
@@ -304,7 +309,7 @@
       wallet: wallet,
       disclaimers: [
         'No agency has announced a 90-day blackout. That number comes from a Pentagon readiness target for military bases. This plan is for the outages that do happen: storms, cold snaps, and grid strain.',
-        'This plan is general preparedness information. It does not replace your doctor, a lawyer, or official emergency instructions. Laws vary by state.',
+        'This plan is general preparedness information. It is not legal or medical advice and creates no lawyer or doctor relationship. It does not replace your doctor, a lawyer, or official emergency instructions. Laws vary by state.',
         'Do not go into debt to prepare, and do not buy "blackout" crypto or miracle gadgets.'
       ]
     };
@@ -336,7 +341,7 @@
     plan.wallet.forEach(function (w) {
       h.push('<p style="margin:0 0 10px;border-bottom:1px solid #9aa8a0;padding-bottom:14px">' + esc(w) + ':</p>');
     });
-    h.push('<p style="margin:0 0 10px"><strong>If stopped:</strong> "Am I free to go? I do not consent to a search. I want a lawyer."</p>');
+    h.push('<p style="margin:0 0 10px"><strong>If stopped:</strong> "Am I free to go? I do not consent to a search. I am going to remain silent. I want a lawyer."</p>');
     h.push('<hr style="border:0;border-top:1px solid #d5ddd8;margin:24px 0 12px">');
     plan.disclaimers.forEach(function (d) { h.push('<p style="margin:0 0 8px;font-size:13px;color:#55635b">' + esc(d) + '</p>'); });
     h.push('</div>');
@@ -355,7 +360,7 @@
     });
     t.push('', 'WALLET CARD (copy by hand, one per person)');
     plan.wallet.forEach(function (w) { t.push(w + ': ________'); });
-    t.push('If stopped: "Am I free to go? I do not consent to a search. I want a lawyer."', '');
+    t.push('If stopped: "Am I free to go? I do not consent to a search. I am going to remain silent. I want a lawyer."', '');
     plan.disclaimers.forEach(function (d) { t.push(d); });
     return t.join('\n');
   }

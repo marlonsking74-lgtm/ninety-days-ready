@@ -104,6 +104,22 @@ const build = (extra) => P.buildPlan(P.validate(Object.assign({}, base, extra)).
     assert.ok(!/open every exit in seconds/.test(allItems(build({ adults: 1, children: 0, housing: 'dorm' }))));
   });
 
+  await test('legal and medical review lines appear only where they apply', () => {
+    const full = build({ housing: 'house', tenure: 'own', elders: 1, infants: 1, health: ['dailymeds', 'coldmeds', 'powered', 'dialysis'] });
+    const text = allItems(full);
+    assert.ok(/Some states require you to give your name/.test(text));
+    assert.ok(/Sign and witness it/.test(text));
+    assert.ok(/never use insulin that has frozen/.test(text));
+    assert.ok(/If anyone uses oxygen/.test(text) && /dangerous on dialysis/.test(text));
+    assert.ok(/No quilts, pillows, or sleeping bags on a baby/.test(text));
+    assert.ok(/under 95 F is an emergency/.test(text));
+    assert.ok(full.notes.some((n) => /not legal or medical advice/.test(n)));
+    assert.ok(/I am going to remain silent\. I want a lawyer/.test(P.renderText(full)));
+    const plain = allItems(build());
+    assert.ok(!/oxygen/.test(plain) && !/insulin/.test(plain) && !/dialysis/i.test(plain) && !/on a baby/.test(plain));
+    assert.ok(/Check your lease first/.test(plain));
+  });
+
   /* ---- function tests, with fetch mocked ---- */
   const post = (body) => handler({ httpMethod: 'POST', body: JSON.stringify(body) });
   const realFetch = global.fetch;
