@@ -128,7 +128,7 @@
 
     /* ---------- Days 1-7 ---------- */
     var w1 = [];
-    w1.push('Fill clean bottles and jugs with tap water until you have ' + people * 3 + ' gallons (1 gallon per person per day, 3 days).');
+    w1.push('Fill clean, food-grade bottles and jugs with tap water until you have ' + people * 3 + ' gallons (1 gallon per person per day, 3 days). Skip old milk jugs, which are hard to get clean. Date each one and refill every 6 months.');
     if (a.foodDays === 'd0') w1.push('Your pantry holds under 3 days. Food is this week\'s first buy: rice, canned beans, canned fish, peanut butter, oats, grits.');
     else if (a.foodDays === 'd3') w1.push('You have a few days of food. Top it up to a solid 7 days of shelf food you already eat.');
     else w1.push('You already have a week or more of food. Check dates, then put this week\'s money into water, light, and medicine instead.');
@@ -153,11 +153,11 @@
     /* ---------- Days 8-30 ---------- */
     var m1 = [];
     m1.push('Build stored water to ' + people * midDays + ' gallons (' + midDays + ' days). Stack it in closets and under beds.');
-    m1.push('Buy plain unscented bleach and learn to treat water: boil 1 minute, or 8 drops of regular 6% bleach per gallon of clear water, wait 30 minutes.');
+    m1.push('Learn to treat water. Boiling for 1 minute is best. Or use plain unscented bleach: 8 drops per gallon if the label says 6%, 6 drops if it says 8.25%. Double it for cloudy or very cold water, then wait 30 minutes. No scented, splashless, or color-safe bleach.');
     m1.push('Build shelf food to ' + midDays + ' days for ' + plural(people, 'person', 'people') + '. Choose low-sodium cans where you can.');
     m1.push('Get a manual can opener.');
     if (a.housing === 'dorm') m1.push('Dorms ban stoves and open flame. Stock no-cook food only: canned fish, peanut butter, crackers, oats, dried fruit, shelf-stable milk.');
-    else m1.push('Plan no-cook meals for the first days and one safe way to heat food. Camp stoves and grills are for outdoors only.');
+    else m1.push('Plan no-cook meals for the first days and one safe way to heat food. Camp stoves and grills are for outdoors only, and fuel is stored away from heat and living space.');
     if (a.infants) m1.push('For ' + plural(a.infants, 'baby', 'babies') + ': stock ready-to-feed formula if you use formula (it needs no water), plus diapers and wipes. A rough count is 8 diapers a day per baby.');
     if (a.children) m1.push('Add comfort items for the children: favorite snacks, books, cards, a small toy each.');
     if (a.pets) m1.push('For ' + plural(a.pets, 'pet', 'pets') + ': two weeks of food, extra water, a carrier or leash, and vaccination records.');
@@ -179,7 +179,8 @@
       if (a.heat === 'electric') m1.push('Your heat is electric, so it goes out with the power. Build the warm-room kit now: one sleeping bag or heavy quilt per person, thermal layers, hats, wool socks.');
       else if (a.heat === 'gas') m1.push('A gas furnace still needs electricity for its blower and thermostat. Plan as if the heat is out: one sleeping bag or heavy quilt per person, thermal layers, hats, wool socks.');
       else m1.push('Plan one warm room: one sleeping bag or heavy quilt per person, thermal layers, hats, wool socks.');
-      m1.push('Never heat with an oven, a grill, or a generator indoors. Carbon monoxide has no smell.');
+      m1.push('Never heat with an oven, a grill, or a generator indoors. Carbon monoxide has no smell. A generator runs outside only, at least 20 feet from the home. Never run a car in a garage to warm up or charge phones.');
+      m1.push('If the carbon monoxide alarm sounds, get everyone outside and call 911.');
       if (a.housing === 'mobile') m1.push('Mobile homes lose heat fast and pipes freeze early. Know how to shut off and drain your water, and know the nearest warming center.');
     } else {
       m1.push('Plan for heat as well as cold: battery fans, shade for windows, and extra drinking water.');
@@ -190,13 +191,16 @@
 
     /* ---------- Days 31-60 ---------- */
     var m2 = [];
+    var EXITS = 'Fire comes first: every person must be able to open every exit in seconds, in the dark. Leave one window in each bedroom free to open as a fire exit, and practice removing the bar and dowels.';
     if (a.housing === 'dorm') {
       m2.push('You cannot change dorm doors, so use what you control: lock up every time, know two exits from your floor, and keep valuables and papers in a small lockbox.');
     } else if (a.tenure === 'rent') {
       m2.push('Harden the door the renter way: swap the short hinge and strike-plate screws for 3-inch screws, add a door security bar, and put dowels in window and sliding-door tracks. All reversible.');
+      m2.push(EXITS);
       m2.push('Save your landlord\'s emergency number and keep a paper copy of the lease.');
     } else {
       m2.push('Harden the doors: 3-inch screws in hinges and strike plates, a door security bar, and dowels in window and sliding-door tracks.');
+      m2.push(EXITS);
     }
     if (a.housing !== 'dorm') m2.push('Check smoke alarms and place a fire extinguisher in the kitchen.');
     if (a.floor === 'high') {
@@ -207,7 +211,7 @@
     }
     m2.push('Cover windows at night during an outage, and keep your prep quiet. Share plans with people you trust, not social media.');
     m2.push('Learn your state\'s self-defense law from a state bar or legal aid source. De-escalation comes first.');
-    m2.push('Learn the script for police contact: stay calm, hands visible, "Am I free to go?", "I do not consent to a search," "I want a lawyer."');
+    m2.push('Learn the script for police contact: stay calm, hands visible, "Am I free to go?", "I do not consent to a search," "I am going to remain silent," "I want a lawyer." Never run, resist, or reach suddenly. In a car, hand over license, registration, and insurance when asked.');
     m2.push('Write legal aid numbers on paper: NAACP Legal Defense Fund, your state ACLU, local legal aid.');
     if (a.teens) m2.push('Walk the teens through the rights script and the curfew rule: comply, document, challenge later.');
 
@@ -224,10 +228,10 @@
       m2.push('Get renters insurance if you have none, and photograph every room.');
     }
     if (a.adults > 0 && a.housing !== 'dorm') m2.push('Every adult writes a will' + (kids ? ' and names who takes the children' : '') + '.');
-    m2.push('Grow the cash reserve toward one month of bare essentials, split between two hiding places.');
+    m2.push('Grow the cash reserve toward one month of bare essentials, split between two hiding places. A fire-resistant pouch or box protects it.');
     m2.push('Open a second account at a credit union or Black-owned bank, and print one statement for every account and debt.');
     if (!small) {
-      m2.push('Build a sanitation kit: 5-gallon bucket with a seat lid, heavy bags, kitty litter, soap, bleach, and menstrual supplies.');
+      m2.push('Build a sanitation kit: 5-gallon bucket with a seat lid, heavy bags, kitty litter, soap, bleach, and menstrual supplies. Never mix bleach with ammonia or other cleaners, and never pour bleach into the toilet bucket.');
       m2.push('Extend food toward ' + finalDays + ' days.');
     } else {
       m2.push('Build a small sanitation kit: heavy bags, wipes, soap, hand sanitizer, and menstrual supplies.');
@@ -254,7 +258,7 @@
     if (a.children || a.teens) m3.push('Give the young people real jobs: flashlight captain, water counter, the one who knows the meeting spots.');
     if (a.elders) m3.push('Ask the elders how they got through hard winters and storms. Write it down.');
     m3.push('Mark a paper map: hospitals, fire stations, pharmacies, warming centers, and your meeting spots.');
-    m3.push('Run a 24-hour lights-out drill at home: no wall power, phones on airplane mode, stored food and water only. Write down what failed and fix the top three.');
+    m3.push('Run a 24-hour lights-out drill at home: lights and screens off, phones on airplane mode, stored food and water only. Keep the heat, the fridge, and any medical equipment running. Write down what failed and fix the top three.');
     if (small) m3.push('Confirm the count: ' + people * finalDays + ' gallons of water and ' + finalDays + ' days of food, plus a known place to go if the outage runs long.');
     else m3.push('Confirm the count: ' + people * midDays + ' gallons stored plus a filter and a known backup source (or ' + people * finalDays + ' gallons if space allows), ' + finalDays + ' days of food, one month of cash.');
 
@@ -262,15 +266,19 @@
     var out = [];
     out.push('Check whether it is just you: the breaker, then neighbors, then the utility outage line.');
     out.push('Turn on the battery radio. Trust official local sources, not forwarded videos.');
-    out.push(a.water === 'well' ? 'Your well pump is down. Switch to stored water right away.' : 'Fill the bathtub and every pot while water pressure lasts' + (a.floor === 'high' ? '. In a tall building that may be minutes.' : '.'));
-    out.push('Keep the fridge and freezer closed. A closed fridge holds about 4 hours, a full freezer about 48.');
+    out.push(a.water === 'well' ? 'Your well pump is down. Switch to stored water right away.' : 'Fill the bathtub and every pot while water pressure lasts' + (a.floor === 'high' ? '. In a tall building that may be minutes.' : '.') + ' Tub water is for flushing and washing. Treat it before drinking.' + ((a.children || a.infants) ? ' Keep small children away from a filled tub.' : ''));
+    out.push('Keep the fridge and freezer closed. A closed fridge holds about 4 hours, a full freezer about 48, a half-full one about 24.');
+    out.push('After 4 hours without power, throw out meat, fish, eggs, milk, and leftovers unless they went into a cooler with ice. Never taste food to test it.');
+    out.push('If you smell gas, leave at once and call the gas company or 911 from outside.');
     out.push('Text your out-of-state contact: who is where, and that you are okay.');
     if (has('coldmeds')) out.push('Move refrigerated medicine to its cooling case the way your pharmacist showed you.');
     if (has('powered')) out.push('Switch medical equipment to backup power and start the clock. Leave for a powered location before the battery is half gone.');
     if (has('dialysis')) out.push('Call your dialysis clinic or its backup, and start the emergency diet.');
     if (a.winter === 'cold') out.push('Move everyone into the warm room at night and check the carbon monoxide alarm.');
+    if (a.winter === 'cold' && (a.elders || a.infants)) out.push('Watch elders and babies closely for cold. Shivering, confusion, slurred speech, or unusual sleepiness means warm them and get medical help.');
     if (a.elders || a.network !== 'alone') out.push('Check on elders and anyone on medical equipment twice a day.');
     out.push('Leave if there is no safe water, no heat in freezing weather, a medical need you cannot meet, or danger you cannot avoid. Go early, in daylight, to a place that expects you.');
+    out.push('Official evacuation or shelter orders override this plan.');
 
     var sections = [
       { id: 'week1', heading: 'Days 1-7: start now', dates: range(1, 7), goal: 'Three days of water and food, and a family plan on paper.', items: w1 },

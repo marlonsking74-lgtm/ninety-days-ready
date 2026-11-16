@@ -92,6 +92,18 @@ const build = (extra) => P.buildPlan(P.validate(Object.assign({}, base, extra)).
     assert.strictEqual((text.match(/^\[ \] /gm) || []).length, count);
   });
 
+  await test('safety lines: fire exits, bleach strengths, food discard, drill keeps heat on, CO', () => {
+    const text = allItems(build({ housing: 'house', tenure: 'own', elders: 1 }));
+    assert.ok(/open every exit in seconds/.test(text));
+    assert.ok(/6 drops if it says 8\.25%/.test(text));
+    assert.ok(/throw out meat, fish, eggs, milk/.test(text));
+    assert.ok(/Keep the heat, the fridge, and any medical equipment running/.test(text));
+    assert.ok(/at least 20 feet/.test(text) && /never pour bleach into the toilet bucket/.test(text));
+    assert.ok(/Treat it before drinking/.test(text) && /Official evacuation/.test(text));
+    assert.ok(/Watch elders and babies/.test(text));
+    assert.ok(!/open every exit in seconds/.test(allItems(build({ adults: 1, children: 0, housing: 'dorm' }))));
+  });
+
   /* ---- function tests, with fetch mocked ---- */
   const post = (body) => handler({ httpMethod: 'POST', body: JSON.stringify(body) });
   const realFetch = global.fetch;
